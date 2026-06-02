@@ -2,7 +2,7 @@
 
 ## Goal
 
-Replace the renderer stub with a real playwright-recast pipeline. By end of this spec `worknet "<prompt>"` produces a fully rendered `.mp4` with narration audio, subtitles, cursor overlay, click effects, and auto-zoom — driven entirely by the agent's `CompletedStep[]` output.
+Replace the renderer stub with a baseline playwright-recast pipeline. By end of this spec `worknet "<prompt>"` produces a playable `.mp4` with narration voice-over audio and burned-in subtitles. No effects yet — cursor overlay, click effects, zoom, and speed control come in spec-04 one at a time.
 
 ## Deliverables
 
@@ -22,7 +22,7 @@ After the browser closes:
 2. `out/tutorial.mp4` exists and is playable
 3. Video has narration voice-over audio
 4. Subtitles are burned in
-5. Cursor and click effects are visible on clicks
+5. No effects expected yet — plain screen recording with audio
 
 ---
 
@@ -113,25 +113,17 @@ export async function render(
     cacheDir: options.ttsCacheDir ?? '.recast-cache/tts',
   });
 
-  let pipeline = Recast
+  await Recast
     .from(run.tracePath)
     .parse()
-    .subtitlesFromSrt(srtPath);
-
-  if (options.cursorOverlay !== false) pipeline = pipeline.cursorOverlay();
-  if (options.clickEffect    !== false) pipeline = pipeline.clickEffect();
-  if (options.autoZoom       !== false) pipeline = pipeline.autoZoom({ inputLevel: 1.4 });
-  if (options.interpolate)              pipeline = pipeline.interpolate({ fps: 60 });
-
-  pipeline = pipeline.voiceover(provider);
-
-  await pipeline
+    .subtitlesFromSrt(srtPath)
+    .voiceover(provider)
     .render({
-      format:         'mp4',
-      resolution:     options.resolution ?? '1080p',
-      fps:            options.fps ?? 60,
-      burnSubtitles:  options.burnSubtitles ?? true,
-      subtitleStyle:  options.subtitleStyle,
+      format:        'mp4',
+      resolution:    options.resolution ?? '1080p',
+      fps:           options.fps ?? 60,
+      burnSubtitles: options.burnSubtitles ?? true,
+      subtitleStyle: options.subtitleStyle,
     })
     .toFile(outputPath);
 
@@ -176,4 +168,4 @@ The CLI already passes `recast: { voice: opts.voice }`. Defaults in the renderer
 
 ## Next Spec
 
-spec-04: Speed control + `.injectActions()` subtitle injection + end-to-end test on a real dashboard
+spec-04: Effects layer — cursor overlay, click effects, auto-zoom, speed control (one at a time, each verified before the next)
