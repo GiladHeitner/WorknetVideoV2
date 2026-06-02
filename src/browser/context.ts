@@ -7,12 +7,16 @@ export interface BrowserHandle {
   context: BrowserContext;
 }
 
+function hostnameOrEmpty(url: string): string {
+  try { return new URL(url).hostname; } catch { return ''; }
+}
+
 export async function launchBrowser(
   startUrl: string,
   options: RecordOptions = {},
 ): Promise<BrowserHandle> {
-  const hostname = new URL(startUrl).hostname;
-  const savedAuth = options.authPath ?? loadAuthPath(hostname);
+  const hostname = hostnameOrEmpty(startUrl);
+  const savedAuth = hostname ? (options.authPath ?? loadAuthPath(hostname)) : null;
 
   const browser = await chromium.launch({
     channel: options.useChrome ? 'chrome' : undefined,
@@ -22,7 +26,6 @@ export async function launchBrowser(
   const context = await browser.newContext({
     storageState: savedAuth ?? undefined,
     viewport: { width: 1280, height: 720 },
-    // Trace recording is started in spec-02 via context.tracing.start()
   });
 
   return { browser, context };
