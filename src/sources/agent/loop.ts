@@ -91,8 +91,8 @@ export async function runAgentLoop(
         index: i,
         action,
         code: code.code,
-        startMs: stepStart,
-        endMs: Date.now(),
+        startMs: stepStart - startTime,   // relative to recording start for SRT alignment
+        endMs: Date.now() - startTime,
         healAttempts,
       };
       history.push(step);
