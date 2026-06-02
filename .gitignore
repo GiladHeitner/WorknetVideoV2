@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Environment — never commit real keys
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# Video output
+out/
+
+# Playwright artifacts
+test-results/
+playwright-report/
+*.zip
+
+# playwright-recast TTS cache
+.recast-cache/
+
+# Editor
+.DS_Store
+*.swp
+*.swo
+.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Auth state — contains session tokens, never commit
+.worknet/auth/
+
+# Skillz local cache
+.skillz-cache.json

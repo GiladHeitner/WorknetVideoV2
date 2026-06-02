@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "targets": ["CLAUDE.md"],
+  "skillDirectories": ["/Users/giladheitner/kevinslin-skills/active"],
+  "additionalSkills": [],
+  "ignore": [],
+  "includeInstructions": false,
+  "autoSync": false,
+  "skillsSectionName": "## Additional Instructions"
+}
